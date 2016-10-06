@@ -7,4 +7,8 @@ def register():
 def unregister():
     print("Goodbye World")
 
-print ('Progress?')
+scene = bpy.context.scene
+for obj in scene.objects:
+    obj.location.x -= 1.0
+    print("I did it, I did it")
+
