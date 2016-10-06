@@ -4,7 +4,7 @@
 import sys
 
 # Ensure that dependencies are up-to-date
-if "bpy" in locals():
+if "move" in locals():
     print("Reloading")
     import importlib
     importlib.reload(move)
