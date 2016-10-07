@@ -2,7 +2,7 @@
 # Can probably make more than 2000
 
 # Setup: import os, sys, importlib ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: importlib.reload(plaques)
+# Reload: importlib.reload(plaques) ; plaques.go()
 
 # System libraries
 import csv
@@ -43,6 +43,15 @@ def get_backers():
 def go():
     for backer in get_backers():
         print(backer['Backer Name'])
+
+# trying idea of having a Script node as an iterator!
+def sv_main(N=1000):
+    verts = []
+    in_sockets = [['s', 'N', N]]
+    out_sockets = [['v','verts', [verts]]]
+
+    lorenz(N, verts)
+    return in_sockets, out_sockets
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
