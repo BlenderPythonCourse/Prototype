@@ -30,7 +30,7 @@ def register():
 def unregister():
     pass
 
-def open_csv():
+def get_backers():
     with open('names.csv', 'r') as csvfile:
         iterable_lazy_reader = csv.reader(csvfile, quotechar="'")
         headers = next(iterable_lazy_reader) # consumes first item
@@ -38,7 +38,11 @@ def open_csv():
         # zip into a dictionary
         for row in iterable_lazy_reader:
             backer = dict(zip(headers, row))
-            print(backer)
+            yield backer # turns entire function into an iterator
+
+def go():
+    for backer in get_backers():
+        print(backer['Backer Name'])
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
