@@ -50,10 +50,18 @@ def duplicate(num, spacing):
         return
 
     # keep a reference to the originally selected object
+    old_column_prototype = None
 
     for count in range(0, num[0]):
-        print('hello')
-        column_prototype = bpy.context.selected_objects[0]
+        if old_column_prototype:
+            bpy.ops.object.select_all(action='DESELECT')
+            old_column_prototype.select = True
+            bpy.ops.object.duplicate_move(
+                OBJECT_OT_duplicate={"linked":False},
+                TRANSFORM_OT_translate={"value":[sp_x, 0, 0]}
+            )
+        new_column_prototype = bpy.context.selected_objects[0]
+
 
         for count in range(0, num[1]):
             print('boo')
@@ -63,12 +71,8 @@ def duplicate(num, spacing):
                 TRANSFORM_OT_translate={"value":[0, sp_y, 0]}
             )
 
-        bpy.ops.object.select_all(action='DESELECT')
-        column_prototype.select = True
-        bpy.ops.object.duplicate_move(
-            OBJECT_OT_duplicate={"linked":False},
-            TRANSFORM_OT_translate={"value":[sp_x, 0, 0]}
-        )
+        old_column_prototype = new_column_prototype
+
 
 def print_csv():
     for backer in get_backers():
