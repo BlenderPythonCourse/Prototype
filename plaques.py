@@ -42,14 +42,35 @@ def get_backers():
             yield backer # turns entire function into an iterator
 
 def duplicate(num, spacing):
+    (num_x, num_y, num_z) = num
+    (sp_x, sp_y, sp_z) = spacing
+
     if bpy.context.selected_objects == []:
         print("Nothing is selected")
         return
 
-    for count in range(1, num + 1):
-        print("Creating duplicate:", count)
+    # keep a reference to the originally selected object
 
-def print_backers():
+    for count in range(0, num[0]):
+        print('hello')
+        column_prototype = bpy.context.selected_objects[0]
+
+        for count in range(0, num[1]):
+            print('boo')
+            print(bpy.context.scene.objects.active)
+            bpy.ops.object.duplicate_move(
+                OBJECT_OT_duplicate={"linked":False},
+                TRANSFORM_OT_translate={"value":[0, sp_y, 0]}
+            )
+
+        bpy.ops.object.select_all(action='DESELECT')
+        column_prototype.select = True
+        bpy.ops.object.duplicate_move(
+            OBJECT_OT_duplicate={"linked":False},
+            TRANSFORM_OT_translate={"value":[sp_x, 0, 0]}
+        )
+
+def print_csv():
     for backer in get_backers():
         print(backer['Backer Name'])
 
