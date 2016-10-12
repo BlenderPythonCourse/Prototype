@@ -7,6 +7,7 @@
 # System libraries
 import csv
 import sys
+import bpy
 
 # 3rd Party libraries
 
@@ -40,18 +41,17 @@ def get_backers():
             backer = dict(zip(headers, row))
             yield backer # turns entire function into an iterator
 
-def go():
+def duplicate(num, spacing):
+    if bpy.context.selected_objects == []:
+        print("Nothing is selected")
+        return
+
+    for count in range(1, num + 1):
+        print("Creating duplicate:", count)
+
+def print_backers():
     for backer in get_backers():
         print(backer['Backer Name'])
-
-# trying idea of having a Script node as an iterator!
-def sv_main(N=1000):
-    verts = []
-    in_sockets = [['s', 'N', N]]
-    out_sockets = [['v','verts', [verts]]]
-
-    lorenz(N, verts)
-    return in_sockets, out_sockets
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
