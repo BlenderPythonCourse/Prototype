@@ -41,6 +41,13 @@ def get_backers():
             backer = dict(zip(headers, row))
             yield backer # turns entire function into an iterator
 
+def generate(offset, text):
+    bpy.ops.object.duplicate_move(
+        OBJECT_OT_duplicate={"linked":False},
+        TRANSFORM_OT_translate={"value":offset}
+    )
+    print("Text I would swap:", text)
+
 def duplicate(num, spacing):
     (num_x, num_y, num_z) = num
     (sp_x, sp_y, sp_z) = spacing
@@ -57,11 +64,8 @@ def duplicate(num, spacing):
             # Select original object
             bpy.ops.object.select_all(action='DESELECT')
             old_prototype.select = True
+            generate([sp_x, 0, 0], "Test exception")
 
-            bpy.ops.object.duplicate_move(
-                OBJECT_OT_duplicate={"linked":False},
-                TRANSFORM_OT_translate={"value":[sp_x, 0, 0]}
-            )
         else:
             new_prototype = bpy.context.selected_objects[0]
 
@@ -70,6 +74,8 @@ def duplicate(num, spacing):
                 OBJECT_OT_duplicate={"linked":False},
                 TRANSFORM_OT_translate={"value":[0, sp_y, 0]}
             )
+            generate([0, sp_y, 0], "Test rule")
+            # TODO move this code into one
 
         old_prototype = new_prototype
 
