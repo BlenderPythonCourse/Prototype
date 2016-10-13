@@ -8,6 +8,7 @@
 import csv
 import sys
 import bpy
+import math
 
 # 3rd Party libraries
 
@@ -41,12 +42,11 @@ def get_backers(filename):
             backer = dict(zip(headers, row))
             yield backer # turns entire function into an iterator
 
-def generate(offset, text):
+def generate(offset):
     bpy.ops.object.duplicate_move(
         OBJECT_OT_duplicate={"linked":False},
         TRANSFORM_OT_translate={"value":offset}
     )
-    print("Text I would swap:", text)
 
 def duplicate(num, spacing):
     (num_x, num_y, num_z) = num
@@ -64,32 +64,41 @@ def duplicate(num, spacing):
             # Select original object
             bpy.ops.object.select_all(action='DESELECT')
             old_prototype.select = True
-            generate([sp_x, 0, 0], "Test exception")
-
+            generate([sp_x, 0, 0])
         else:
             new_prototype = bpy.context.selected_objects[0]
 
         for _ in range(0, num_y):
-            bpy.ops.object.duplicate_move(
-                OBJECT_OT_duplicate={"linked":False},
-                TRANSFORM_OT_translate={"value":[0, sp_y, 0]}
-            )
-            generate([0, sp_y, 0], "Test rule")
+            generate([0, sp_y, 0])
             # TODO move this code into one
 
         old_prototype = new_prototype
 
+def swap_material(plaque, name):
+    print("Swapping material text to:", name)
+    # TODO implement
 
-def print_csv(filename):
+def get_offset(plaque_number, columns, spacing):
+    x_offset = plaque_number % columns * spacing[0]
+    y_offset = math.floor(plaque_number / columns) * spacing[1]
+    return((x_offset, y_offset))
+
+def print_csv(filename, columns, spacing):
     if bpy.context.selected_objects == []:
         print("Nothing is selected")
         return
 
-    for backer in get_backers(filename):
-        # swap first material out
-        print(backer['Backer Name'])
+    prototype = bpy.context.selected_objects[0]
+    for plaque_number, backer in enumerate(get_backers(filename)):
+        if plaque_number == 0:
+            plaque = prototype
+        else:
+            print("Duplicating model")
+            offset = get_offset(plaque_number, columns, spacing)
+            print("Offset:", offset)
+            #plaque = create_plaque(prototype, offset)
 
-
+        swap_material(plaque, backer['Backer Name'])
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
