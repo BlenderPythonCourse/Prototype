@@ -31,8 +31,8 @@ def register():
 def unregister():
     pass
 
-def get_backers():
-    with open('names.csv', 'r') as csvfile:
+def get_backers(filename):
+    with open(filename, 'r') as csvfile:
         iterable_lazy_reader = csv.reader(csvfile, quotechar="'")
         headers = next(iterable_lazy_reader) # consumes first item
 
@@ -80,9 +80,16 @@ def duplicate(num, spacing):
         old_prototype = new_prototype
 
 
-def print_csv():
-    for backer in get_backers():
+def print_csv(filename):
+    if bpy.context.selected_objects == []:
+        print("Nothing is selected")
+        return
+
+    for backer in get_backers(filename):
+        # swap first material out
         print(backer['Backer Name'])
+
+
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
