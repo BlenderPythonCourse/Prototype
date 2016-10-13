@@ -8,7 +8,6 @@
 import csv
 import sys
 import bpy
-import math
 
 # 3rd Party libraries
 
@@ -80,12 +79,27 @@ def swap_material(plaque, name):
 
 def get_offset(plaque_number, columns, spacing):
     x_offset = plaque_number % columns * spacing[0]
-    y_offset = math.floor(plaque_number / columns) * spacing[1]
-    return((x_offset, y_offset))
+    y_offset = plaque_number // columns * spacing[1] # // integer division
+    z_offset = 0 # 2D
+    return((x_offset, y_offset, z_offset))
+
+def create_plaque(prototype, offset):
+    prototype.select = True
+    bpy.ops.object.duplicate_move(
+        OBJECT_OT_duplicate={"linked":False},
+        TRANSFORM_OT_translate={"value":offset}
+    )
+    new_plaque = bpy.context.selected_objects[0]
+    new_plaque.select = False
+    return new_plaque
 
 def print_csv(filename, columns, spacing):
+    # TODO check it has a material to swap?
     if bpy.context.selected_objects == []:
         print("Nothing is selected")
+        return
+    if len(bpy.context.selected_objects) > 1:
+        print("Select only one prototype")
         return
 
     prototype = bpy.context.selected_objects[0]
@@ -96,7 +110,7 @@ def print_csv(filename, columns, spacing):
             print("Duplicating model")
             offset = get_offset(plaque_number, columns, spacing)
             print("Offset:", offset)
-            #plaque = create_plaque(prototype, offset)
+            plaque = create_plaque(prototype, offset)
 
         swap_material(plaque, backer['Backer Name'])
 
