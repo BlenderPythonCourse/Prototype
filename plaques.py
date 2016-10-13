@@ -41,38 +41,6 @@ def get_backers(filename):
             backer = dict(zip(headers, row))
             yield backer # turns entire function into an iterator
 
-def generate(offset):
-    bpy.ops.object.duplicate_move(
-        OBJECT_OT_duplicate={"linked":False},
-        TRANSFORM_OT_translate={"value":offset}
-    )
-
-def duplicate(num, spacing):
-    (num_x, num_y, num_z) = num
-    (sp_x, sp_y, sp_z) = spacing
-
-    if bpy.context.selected_objects == []:
-        print("Nothing is selected")
-        return
-
-    # keep a reference to the originally selected object
-    old_prototype = None
-
-    for _ in range(0, num_x):
-        if old_prototype:
-            # Select original object
-            bpy.ops.object.select_all(action='DESELECT')
-            old_prototype.select = True
-            generate([sp_x, 0, 0])
-        else:
-            new_prototype = bpy.context.selected_objects[0]
-
-        for _ in range(0, num_y):
-            generate([0, sp_y, 0])
-            # TODO move this code into one
-
-        old_prototype = new_prototype
-
 def swap_material(plaque, name):
     print("Swapping material text to:", name)
     # TODO implement
@@ -93,23 +61,22 @@ def create_plaque(prototype, offset):
     new_plaque.select = False
     return new_plaque
 
-def print_csv(filename, columns, spacing):
+def throw_invalid_selection():
     # TODO check it has a material to swap?
     if bpy.context.selected_objects == []:
-        print("Nothing is selected")
-        return
+        raise Exception("Nothing is selected")
     if len(bpy.context.selected_objects) > 1:
-        print("Select only one prototype")
-        return
+        raise Exception("Select only one prototype")
+
+def go(filename, columns, spacing):
+    throw_invalid_selection()
 
     prototype = bpy.context.selected_objects[0]
     for plaque_number, backer in enumerate(get_backers(filename)):
         if plaque_number == 0:
             plaque = prototype
         else:
-            print("Duplicating model")
             offset = get_offset(plaque_number, columns, spacing)
-            print("Offset:", offset)
             plaque = create_plaque(prototype, offset)
 
         swap_material(plaque, backer['Backer Name'])
