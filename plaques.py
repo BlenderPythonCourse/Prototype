@@ -2,7 +2,8 @@
 # Can probably make more than 2000
 
 # Setup: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaquesgo()
+# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('names_2.csv', 2, (10,10))
+
 
 # System libraries
 import csv
@@ -62,7 +63,9 @@ def create_plaque(prototype, offset):
     return new_plaque
 
 def throw_invalid_selection():
-    # TODO check it has a material to swap?
+    materials = bpy.context.selected_objects[0].material_slots.items()
+    if not 'NameMaterial' in dict(materials):
+        raise Exception("Selected object has no material called 'NameMaterial'")
     if bpy.context.selected_objects == []:
         raise Exception("Nothing is selected")
     if len(bpy.context.selected_objects) > 1:
@@ -74,11 +77,11 @@ def swap_material(plaque, directory, name):
 def generate_texture(name, filename):
     from PIL import Image, ImageDraw, ImageFont
 
-    im = Image.new('RGB', (200,200), (0,0,0))
+    im = Image.new('RGB', (900,900), (0,0,0))
 
     draw = ImageDraw.Draw(im)
-    fnt = ImageFont.truetype('LeelaUIb.ttf', 40)
-    draw.text((10,10), name, font=fnt, fill=(255,255,255))
+    fnt = ImageFont.truetype('LeelaUIb.ttf', 100)
+    draw.text((200,400), name, font=fnt, fill=(255,255,255))
 
     im.save(filename)
 
