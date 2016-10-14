@@ -2,7 +2,7 @@
 # Can probably make more than 2000
 
 # Setup: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: import importlib ; importlib.reload(plaques) ; plaques.go()
+# Reload: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaquesgo()
 
 # System libraries
 import csv
@@ -72,16 +72,15 @@ def throw_invalid_selection():
         raise Exception("Select only one prototype")
 
 def draw_test():
-    from PIL import Image, ImageDraw
+    from PIL import Image, ImageDraw, ImageFont
 
-    im = Image.new('RGBA', base.size, (255,255,255,0))
+    im = Image.new('RGB', (200,200), (0,0,0))
 
     draw = ImageDraw.Draw(im)
-    draw.line((0, 0) + im.size, fill=128)
-    draw.line((0, im.size[1], im.size[0], 0), fill=128)
-    del draw
+    fnt = ImageFont.truetype('LeelaUIb.ttf', 40)
+    draw.text((10,10), "Hello", font=fnt, fill=(255,255,255))
 
-    im.show()
+    im.save('outie.png')
 
 def go(filename, columns, spacing):
     throw_invalid_selection()
