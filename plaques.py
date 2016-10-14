@@ -8,6 +8,7 @@
 import csv
 import sys
 import bpy
+import os
 
 # 3rd Party libraries go here
 sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
@@ -44,10 +45,6 @@ def get_backers(filename):
             backer = dict(zip(headers, row))
             yield backer # turns entire function into an iterator
 
-def swap_material(plaque, name):
-    print("Swapping material text to:", name)
-    # TODO implement
-
 def get_offset(plaque_number, columns, spacing):
     x_offset = plaque_number % columns * spacing[0]
     y_offset = plaque_number // columns * spacing[1] # // integer division
@@ -71,19 +68,23 @@ def throw_invalid_selection():
     if len(bpy.context.selected_objects) > 1:
         raise Exception("Select only one prototype")
 
-def draw_test():
+def swap_material(plaque, directory, name):
+    generate_texture(name, os.path.join(directory, name + '.png'))
+
+def generate_texture(name, filename):
     from PIL import Image, ImageDraw, ImageFont
 
     im = Image.new('RGB', (200,200), (0,0,0))
 
     draw = ImageDraw.Draw(im)
     fnt = ImageFont.truetype('LeelaUIb.ttf', 40)
-    draw.text((10,10), "Hello", font=fnt, fill=(255,255,255))
+    draw.text((10,10), name, font=fnt, fill=(255,255,255))
 
-    im.save('outie.png')
+    im.save(filename)
 
 def go(filename, columns, spacing):
     throw_invalid_selection()
+    cache_directory = 'texture_cache'
 
     prototype = bpy.context.selected_objects[0]
     for plaque_number, backer in enumerate(get_backers(filename)):
@@ -91,9 +92,9 @@ def go(filename, columns, spacing):
             plaque = prototype
         else:
             offset = get_offset(plaque_number, columns, spacing)
-            plaque = create_plaque(prototype, offset)
+            # plaque = create_plaque(prototype, offset)
 
-        swap_material(plaque, backer['Backer Name'])
+        swap_material(plaque, cache_directory, backer['Backer Name'])
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
