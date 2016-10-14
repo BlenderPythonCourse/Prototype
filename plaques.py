@@ -10,6 +10,9 @@ import sys
 import bpy
 
 # 3rd Party libraries go here
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
 
 # Own modules go here
 
@@ -67,6 +70,18 @@ def throw_invalid_selection():
         raise Exception("Nothing is selected")
     if len(bpy.context.selected_objects) > 1:
         raise Exception("Select only one prototype")
+
+def draw_test():
+    from PIL import Image, ImageDraw
+
+    im = Image.new('RGBA', base.size, (255,255,255,0))
+
+    draw = ImageDraw.Draw(im)
+    draw.line((0, 0) + im.size, fill=128)
+    draw.line((0, im.size[1], im.size[0], 0), fill=128)
+    del draw
+
+    im.show()
 
 def go(filename, columns, spacing):
     throw_invalid_selection()
