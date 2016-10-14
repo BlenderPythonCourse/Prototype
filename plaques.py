@@ -1,20 +1,20 @@
 # Makes plaques, as in things on walls
 # Can probably make more than 2000
 
-# Setup: import os, sys, importlib ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: importlib.reload(plaques) ; plaques.go()
+# Setup: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
+# Reload: import importlib ; importlib.reload(plaques) ; plaques.go()
 
 # System libraries
 import csv
 import sys
 import bpy
 
-# 3rd Party libraries
+# 3rd Party libraries go here
 
-# Own modules
+# Own modules go here
 
 # Ensure that dependencies are up-to-date
-if "move" in locals():
+if "module_to_import" in locals(): # we've imported this module
     print("Reloading")
     import importlib
     importlib.reload(move)
