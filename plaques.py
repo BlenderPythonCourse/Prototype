@@ -73,6 +73,9 @@ def throw_invalid_selection():
 
 def swap_material(plaque, directory, name):
     generate_texture(name, os.path.join(directory, name + '.png'))
+    bpy.context.selected_objects[0].material_slots['NameMaterial'].material.copy()
+    bpy.data.materials['NameMaterial.001'].node_tree.nodes['Image Texture.001'].image.update()
+    # TODO sort.001 issue and finalise
 
 def generate_texture(name, filename):
     from PIL import Image, ImageDraw, ImageFont
