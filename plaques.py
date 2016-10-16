@@ -28,10 +28,10 @@ sys.path.append('/venv/lib/python3.5/lib')
 if "module_to_import" in locals(): # we've imported this module
     print("Reloading")
     import importlib
-    importlib.reload(move)
+    # importlib.reload(module_to_import)
 else:
     print("Importing")
-    import move
+    # import module_to_import
 
 # Parsed by Blender, use only strings or the world explodes
 bl_info = {"name": "My Test Addon", "category": "Object"}
@@ -80,10 +80,11 @@ def throw_invalid_selection():
         raise Exception("Select only one prototype")
 
 def swap_material(plaque, directory, name):
-    generate_texture(name, os.path.join(directory, name + '.png'))
-    bpy.context.selected_objects[0].material_slots['NameMaterial'].material.copy()
-    bpy.data.materials['NameMaterial.001'].node_tree.nodes['Image Texture.001'].image.update()
+    # generate_texture(name, os.path.join(directory, name + '.png'))
+    # bpy.context.selected_objects[0].material_slots['NameMaterial'].material.copy()
+    # bpy.data.materials['NameMaterial.001'].node_tree.nodes['Image Texture.001'].image.update()
     # TODO sort.001 issue and finalise
+    pass
 
 def generate_texture(name, filename):
     from PIL import Image, ImageDraw, ImageFont
@@ -106,7 +107,7 @@ def go(filename, columns, spacing):
             plaque = prototype
         else:
             offset = get_offset(plaque_number, columns, spacing)
-            # plaque = create_plaque(prototype, offset)
+            plaque = create_plaque(prototype, offset)
 
         swap_material(plaque, cache_directory, backer['Backer Name'])
 
