@@ -37,7 +37,9 @@ def unregister():
     pass
 
 def get_backers(filename):
-    with open(filename, 'r') as csvfile:
+    current_directory = os.path.dirname(bpy.data.filepath)
+    full_file_path = os.path.join(current_directory, filename)
+    with open(full_file_path, 'r') as csvfile:
         iterable_lazy_reader = csv.reader(csvfile, quotechar="'")
         headers = next(iterable_lazy_reader) # consumes first item
 
