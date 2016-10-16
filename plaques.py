@@ -17,6 +17,7 @@ import codecs # to ensure correct text file handling cross-platform
 # sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
 # sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
 # sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
+# TODO make these path tails identical Mac to PC
 
 ## Mac
 sys.path.append('/venv/lib/python3.5/site-packages')
