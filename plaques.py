@@ -10,6 +10,7 @@ import csv
 import sys
 import bpy
 import os
+import codecs # to ensure correct text file handling cross-platform
 
 # 3rd Party libraries go here
 sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
@@ -39,7 +40,7 @@ def unregister():
 def get_backers(filename):
     current_directory = os.path.dirname(bpy.data.filepath)
     full_file_path = os.path.join(current_directory, filename)
-    with open(full_file_path, 'r') as csvfile:
+    with codecs.open(full_file_path, 'r', 'utf-8') as csvfile:
         iterable_lazy_reader = csv.reader(csvfile, quotechar="'")
         headers = next(iterable_lazy_reader) # consumes first item
 
