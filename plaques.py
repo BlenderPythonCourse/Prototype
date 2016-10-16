@@ -13,9 +13,14 @@ import os
 import codecs # to ensure correct text file handling cross-platform
 
 # 3rd Party libraries go here
-sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
-sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
-sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
+## Windows
+# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
+# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
+# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
+
+## Mac
+sys.path.append('/venv/lib/python3.5/site-packages')
+sys.path.append('/venv/lib/python3.5/lib')
 
 # Own modules go here
 
