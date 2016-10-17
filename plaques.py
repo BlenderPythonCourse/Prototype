@@ -83,12 +83,10 @@ def throw_invalid_selection():
 def swap_material(plaque, directory, name):
     generate_texture(name, os.path.join(directory, name + '.png'))
 
-    first_material = plaque.material_slots[0].material
-    new_material = first_material.copy()
+    new_material = plaque.material_slots[0].material.copy()
     plaque.material_slots[0].material = new_material
-
-    texture_node = new_material.node_tree.nodes['Image Texture.001']
-    texture_node.image.filepath = '//texture_cache\\' + name + '.png'
+    new_image = bpy.data.images.load('//texture_cache\\' + name + '.png')
+    new_material.node_tree.nodes['Image Texture.001'].image = new_image
 
 def generate_texture(name, filename):
     from PIL import Image, ImageDraw, ImageFont
