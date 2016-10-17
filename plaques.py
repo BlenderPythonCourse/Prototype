@@ -2,7 +2,7 @@
 # Can probably make more than 2000
 
 # Setup: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('names_2.csv', 2, (10,10))
+# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('names_5.csv', 2, (6,6))
 
 
 # System libraries
@@ -14,14 +14,14 @@ import codecs # to ensure correct text file handling cross-platform
 
 # 3rd Party libraries go here
 ## Windows
-# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
-# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
-# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
 # TODO make these path tails identical Mac to PC
 
 ## Mac
-sys.path.append('/venv/lib/python3.5/site-packages')
-sys.path.append('/venv/lib/python3.5/lib')
+# sys.path.append('/venv/lib/python3.5/site-packages')
+# sys.path.append('/venv/lib/python3.5/lib')
 
 # Own modules go here
 
@@ -72,20 +72,23 @@ def create_plaque(prototype, offset):
     return new_plaque
 
 def throw_invalid_selection():
-    materials = bpy.context.selected_objects[0].material_slots.items()
-    if not 'NameMaterial' in dict(materials):
-        raise Exception("Selected object has no material called 'NameMaterial'")
+    # materials = bpy.context.selected_objects[0].material_slots.items()
+    # if not 'NameMaterial' in dict(materials):
+    #     raise Exception("Selected object has no material called 'NameMaterial'")
     if bpy.context.selected_objects == []:
         raise Exception("Nothing is selected")
     if len(bpy.context.selected_objects) > 1:
         raise Exception("Select only one prototype")
 
 def swap_material(plaque, directory, name):
-    # generate_texture(name, os.path.join(directory, name + '.png'))
-    # bpy.context.selected_objects[0].material_slots['NameMaterial'].material.copy()
-    # bpy.data.materials['NameMaterial.001'].node_tree.nodes['Image Texture.001'].image.update()
-    # TODO sort.001 issue and finalise
-    pass
+    generate_texture(name, os.path.join(directory, name + '.png'))
+
+    first_material = plaque.material_slots[0].material
+    new_material = first_material.copy()
+    plaque.material_slots[0].material = new_material
+
+    texture_node = new_material.node_tree.nodes['Image Texture.001']
+    texture_node.image.filepath = '//texture_cache\\' + name + '.png'
 
 def generate_texture(name, filename):
     from PIL import Image, ImageDraw, ImageFont
