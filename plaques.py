@@ -13,15 +13,14 @@ import os
 import codecs # to ensure correct text file handling cross-platform
 
 # 3rd Party libraries go here
-## Windows
-sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
-sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
-sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
-# TODO make these path tails identical Mac to PC
+## Windows (comment next 3 lines on Mac)
+# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
+# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
+# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
 
-## Mac
-# sys.path.append('/venv/lib/python3.5/site-packages')
-# sys.path.append('/venv/lib/python3.5/lib')
+## Mac (comment next 2 lines on Windows)
+sys.path.append('/venv/lib/python3.5/site-packages')
+sys.path.append('/venv/lib/python3.5/lib')
 
 # Own modules go here
 
@@ -57,8 +56,8 @@ def get_backers(filename):
 
 def get_offset(plaque_number, columns, spacing):
     x_offset = plaque_number % columns * spacing[0]
-    y_offset = plaque_number // columns * spacing[1] # // integer division
-    z_offset = 0 # 2D
+    y_offset = 0
+    z_offset = plaque_number // columns * spacing[2] # // integer division
     return((x_offset, y_offset, z_offset))
 
 def create_plaque(prototype, offset):
