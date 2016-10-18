@@ -56,8 +56,8 @@ def get_backers(filename):
 
 def get_offset(plaque_number, columns, spacing):
     x_offset = plaque_number % columns * spacing[0]
-    y_offset = 0
-    z_offset = plaque_number // columns * spacing[2] # // integer division
+    y_offset = plaque_number // columns * spacing[1] # // integer division
+    z_offset = 0
     return((x_offset, y_offset, z_offset))
 
 def create_plaque(prototype, offset):
@@ -95,7 +95,7 @@ def generate_texture(name, filename):
 
     draw = ImageDraw.Draw(im)
     fnt = ImageFont.truetype('LeelaUIb.ttf', 100)
-    draw.text((200,400), name, font=fnt, fill=(255,255,255))
+    draw.text((150, 200), name, font=fnt, fill=(255,255,255))
 
     im.save(filename)
 
