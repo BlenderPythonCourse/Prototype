@@ -2,7 +2,7 @@
 # Can probably make more than 2000
 
 # Setup: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('names_5.csv', 2, (6,6))
+# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('names_29.csv', 28, (.6,0,.6))
 
 
 # System libraries
@@ -14,13 +14,13 @@ import codecs # to ensure correct text file handling cross-platform
 
 # 3rd Party libraries go here
 ## Windows (comment next 3 lines on Mac)
-# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
-# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
-# sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
+sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/DLLs')
 
 ## Mac (comment next 2 lines on Windows)
-sys.path.append('/venv/lib/python3.5/site-packages')
-sys.path.append('/venv/lib/python3.5/lib')
+# sys.path.append('/venv/lib/python3.5/site-packages')
+# sys.path.append('/venv/lib/python3.5/lib')
 
 # Own modules go here
 
@@ -85,12 +85,13 @@ def swap_material(plaque, directory, name):
     new_material = plaque.material_slots[0].material.copy()
     plaque.material_slots[0].material = new_material
     new_image = bpy.data.images.load('//texture_cache\\' + name + '.png')
-    new_material.node_tree.nodes['Image Texture.001'].image = new_image
+    new_material.node_tree.nodes['Image Texture'].image = new_image
+    #TODO make more general, sometimes just 'Image Texture'
 
 def generate_texture(name, filename):
     from PIL import Image, ImageDraw, ImageFont
 
-    im = Image.new('RGB', (900,900), (0,0,0))
+    im = Image.new('RGB', (512,512), (0,0,0))
 
     draw = ImageDraw.Draw(im)
     fnt = ImageFont.truetype('LeelaUIb.ttf', 100)
