@@ -91,11 +91,11 @@ def swap_material(plaque, directory, name):
 def generate_texture(name, filename):
     from PIL import Image, ImageDraw, ImageFont
 
-    im = Image.new('RGB', (512,512), (0,0,0))
+    im = Image.new('RGB', (512,64), (0,0,0))
 
     draw = ImageDraw.Draw(im)
-    fnt = ImageFont.truetype('LeelaUIb.ttf', 100)
-    draw.text((150, 200), name, font=fnt, fill=(255,255,255))
+    fnt = ImageFont.truetype('LeelaUIb.ttf', 50)
+    draw.text((0, 0), name, font=fnt, fill=(255,255,255))
 
     im.save(filename)
 
@@ -111,7 +111,8 @@ def go(filename, columns, spacing):
             offset = get_offset(plaque_number, columns, spacing)
             plaque = create_plaque(prototype, offset)
 
-        swap_material(plaque, cache_directory, backer['Backer Name'])
+        name = backer['Backer Name'].split()[0]
+        swap_material(plaque, cache_directory, name)
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
