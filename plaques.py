@@ -2,7 +2,7 @@
 # Can probably make more than 2000
 
 # Setup: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('names_29.csv', 28, (.6,0,.6))
+# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('backers.csv', 4, (1.5,2))
 
 
 # System libraries
