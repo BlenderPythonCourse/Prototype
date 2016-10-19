@@ -80,7 +80,7 @@ def throw_invalid_selection():
         raise Exception("Select only one prototype")
 
 def create_material(plaque, directory, text, backer_number):
-    image_filename = backer_number + text + '.png'
+    image_filename = backer_number + '.png'
     generate_texture(text, os.path.join(directory, image_filename))
 
     new_material = plaque.material_slots[0].material.copy()
