@@ -94,7 +94,7 @@ def generate_texture(name, filename):
     im = Image.new('RGB', (512,64), (0,0,0))
 
     draw = ImageDraw.Draw(im)
-    fnt = ImageFont.truetype('LeelaUIb.ttf', 50)
+    fnt = ImageFont.truetype('arial.ttf', 50)
     draw.text((0, 0), name, font=fnt, fill=(255,255,255))
 
     im.save(filename)
@@ -120,4 +120,3 @@ if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
 
     # TODO check special characters
-    # TODO check Zombie_zocks_96 fits
