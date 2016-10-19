@@ -45,7 +45,7 @@ def unregister():
 def get_backers(filename):
     current_directory = os.path.dirname(bpy.data.filepath)
     full_file_path = os.path.join(current_directory, filename)
-    with codecs.open(full_file_path, 'r', 'utf-8') as csvfile:
+    with codecs.open(full_file_path, 'r', 'utf-8-sig') as csvfile:
         iterable_lazy_reader = csv.reader(csvfile, quotechar='"')
         headers = next(iterable_lazy_reader) # consumes first item
 
@@ -79,12 +79,13 @@ def throw_invalid_selection():
     if len(bpy.context.selected_objects) > 1:
         raise Exception("Select only one prototype")
 
-def swap_material(plaque, directory, text):
-    generate_texture(text, os.path.join(directory, text + '.png'))
+def create_material(plaque, directory, text, backer_number):
+    image_filename = backer_number + text + '.png'
+    generate_texture(text, os.path.join(directory, image_filename))
 
     new_material = plaque.material_slots[0].material.copy()
     plaque.material_slots[0].material = new_material
-    new_image = bpy.data.images.load('//texture_cache\\' + text + '.png')
+    new_image = bpy.data.images.load('//texture_cache\\' + image_filename)
     new_material.node_tree.nodes['Image Texture'].image = new_image
     #TODO make more general, sometimes just 'Image Texture'
 
@@ -99,24 +100,20 @@ def generate_texture(name, filename):
 
     im.save(filename)
 
-def go(filename, columns, spacing):
+def go(csv_file, columns, spacing):
     throw_invalid_selection()
     cache_directory = 'texture_cache'
 
     prototype = bpy.context.selected_objects[0]
-    for plaque_number, backer in enumerate(get_backers(filename)):
+    for plaque_number, backer in enumerate(get_backers(csv_file)):
         if plaque_number == 0:
             plaque = prototype
         else:
             offset = get_offset(plaque_number, columns, spacing)
             plaque = create_plaque(prototype, offset)
 
-        first_name = backer['Backer Name'].split()[0]
-        text_to_render = first_name + ', ' + backer['Billing Country']
-
-        swap_material(plaque, cache_directory, text_to_render)
+        text_to_render = backer['Name'] + ', ' + backer['Country']
+        create_material(plaque, cache_directory, text_to_render, backer['Number'])
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
-
-    # TODO check special characters
