@@ -118,3 +118,6 @@ def go(filename, columns, spacing):
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
+
+    # TODO check special characters
+    # TODO check Zombie_zocks_96 fits
