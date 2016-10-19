@@ -46,7 +46,7 @@ def get_backers(filename):
     current_directory = os.path.dirname(bpy.data.filepath)
     full_file_path = os.path.join(current_directory, filename)
     with codecs.open(full_file_path, 'r', 'utf-8') as csvfile:
-        iterable_lazy_reader = csv.reader(csvfile, quotechar="'")
+        iterable_lazy_reader = csv.reader(csvfile, quotechar='"')
         headers = next(iterable_lazy_reader) # consumes first item
 
         # zip into a dictionary
@@ -79,12 +79,12 @@ def throw_invalid_selection():
     if len(bpy.context.selected_objects) > 1:
         raise Exception("Select only one prototype")
 
-def swap_material(plaque, directory, name):
-    generate_texture(name, os.path.join(directory, name + '.png'))
+def swap_material(plaque, directory, text):
+    generate_texture(text, os.path.join(directory, text + '.png'))
 
     new_material = plaque.material_slots[0].material.copy()
     plaque.material_slots[0].material = new_material
-    new_image = bpy.data.images.load('//texture_cache\\' + name + '.png')
+    new_image = bpy.data.images.load('//texture_cache\\' + text + '.png')
     new_material.node_tree.nodes['Image Texture'].image = new_image
     #TODO make more general, sometimes just 'Image Texture'
 
@@ -111,8 +111,10 @@ def go(filename, columns, spacing):
             offset = get_offset(plaque_number, columns, spacing)
             plaque = create_plaque(prototype, offset)
 
-        name = backer['Backer Name'].split()[0]
-        swap_material(plaque, cache_directory, name)
+        first_name = backer['Backer Name'].split()[0]
+        text_to_render = first_name + ', ' + backer['Billing Country']
+
+        swap_material(plaque, cache_directory, text_to_render)
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
