@@ -13,6 +13,8 @@ import os
 import codecs # to ensure correct text file handling cross-platform
 
 # 3rd Party libraries go here
+from PIL import Image, ImageDraw, ImageFont
+
 ## Windows (comment next 3 lines on Mac)
 sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib/site-packages')
 sys.path.append('C:/Users/Ben/AppData/Local/Programs/Python/Python35/Lib')
@@ -45,6 +47,7 @@ def unregister():
 def get_backers(csv_filename):
     current_directory = os.path.dirname(bpy.data.filepath)
     full_file_path = os.path.join(current_directory, csv_filename)
+
     with codecs.open(full_file_path, 'r', 'utf-8-sig') as csvfile:
         iterable_lazy_reader = csv.reader(csvfile, quotechar='"')
         headers = next(iterable_lazy_reader) # consumes first item
@@ -53,10 +56,9 @@ def get_backers(csv_filename):
             yield backer # turns entire function into an iterator
 
 def get_offset(plaque_number, columns, spacing):
-    x_offset = plaque_number % columns * spacing[0]
-    y_offset = plaque_number // columns * spacing[1] # // integer division
-    z_offset = 0
-    return((x_offset, y_offset, z_offset))
+    x_offset = (plaque_number % columns) * spacing[0]
+    y_offset = (plaque_number // columns) * spacing[1] # '//' is integer division
+    return (x_offset, y_offset)
 
 def create_plaque(prototype, offset):
     prototype.select = True
@@ -89,7 +91,6 @@ def swap_blender_texture(plaque, image_filename):
     new_texture.image = new_image
 
 def render_texture_to_file(text_to_render, to_filename):
-    from PIL import Image, ImageDraw, ImageFont
     im = Image.new('RGB', (512,64), (0,0,0))
     draw = ImageDraw.Draw(im)
     fnt = ImageFont.truetype('arial.ttf', 50)
@@ -115,8 +116,8 @@ def go(csv_filename, columns, spacing, render_mode):
         if plaque_number == 0:
             plaque = prototype
         else:
-            offset = get_offset(plaque_number, columns, spacing)
-            plaque = create_plaque(prototype, offset)
+            x, y = get_offset(plaque_number, columns, spacing)
+            plaque = create_plaque(prototype, (x, y, 0))
         swap_text(plaque, backer, render_mode)
 
 if __name__ == '__main__':
