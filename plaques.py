@@ -2,7 +2,7 @@
 # Can probably make more than 2000
 
 # Setup: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('backers.csv', 4, (1.5,2))
+# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('backers_10.csv', 4, (1.5,2), True)
 
 
 # System libraries
@@ -69,9 +69,6 @@ def create_plaque(prototype, offset):
     return new_plaque
 
 def throw_invalid_selection():
-    # materials = bpy.context.selected_objects[0].material_slots.items()
-    # if not 'NameMaterial' in dict(materials):
-    #     raise Exception("Selected object has no material called 'NameMaterial'")
     if bpy.context.selected_objects == []:
         raise Exception("Nothing is selected")
     if len(bpy.context.selected_objects) > 1:
@@ -83,6 +80,11 @@ def swap_cycles_material(plaque, image_filename):
     new_image = bpy.data.images.load(image_filename)
     new_material.node_tree.nodes['Image Texture'].image = new_image # if first
 
+def swap_blender_texture(plaque, image_filename):
+    print("Using Blender Render method")
+    print("Or at least I will when the code's written!")
+    pass
+
 def render_texture_to_file(text_to_render, to_filename):
     from PIL import Image, ImageDraw, ImageFont
     im = Image.new('RGB', (512,64), (0,0,0))
@@ -91,7 +93,19 @@ def render_texture_to_file(text_to_render, to_filename):
     draw.text((0, 0), text_to_render, font=fnt, fill=(255,255,255))
     im.save(to_filename)
 
-def go(csv_filename, columns, spacing):
+def swap_text(plaque, backer, render_mode):
+    cwd = os.path.dirname(bpy.data.filepath)
+    image_filename = cwd + '\\texture_cache\\' + backer['Number'] + '.png'
+    text_to_render = backer['Name'] + ', ' + backer['Country']
+    render_texture_to_file(text_to_render, image_filename)
+    if render_mode == 'cycles':
+        swap_cycles_material(plaque, image_filename)
+    elif render_mode == 'br':
+        swap_blender_texture(plaque, image_filename)
+    else:
+        raise Exception("Invalid render mode selected")
+
+def go(csv_filename, columns, spacing, render_mode):
     throw_invalid_selection()
     prototype = bpy.context.selected_objects[0]
     for plaque_number, backer in enumerate(get_backers(csv_filename)):
@@ -100,13 +114,7 @@ def go(csv_filename, columns, spacing):
         else:
             offset = get_offset(plaque_number, columns, spacing)
             plaque = create_plaque(prototype, offset)
-
-        # TODO extract to swap_text() method and provide enum cycles switch
-        cwd = os.path.dirname(bpy.data.filepath)
-        image_filename = cwd + '\\texture_cache\\' + backer['Number'] + '.png'
-        text_to_render = backer['Name'] + ', ' + backer['Country']
-        render_texture_to_file(text_to_render, image_filename)
-        swap_cycles_material(plaque, image_filename)
+        swap_text(plaque, backer, render_mode)
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
