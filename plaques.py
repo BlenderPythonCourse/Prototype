@@ -2,7 +2,7 @@
 # Can probably make more than 2000
 
 # Setup: import os, sys ; sys.path.append(os.path.dirname(bpy.data.filepath)) ; import plaques
-# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('backers_10.csv', 4, (1.5,2), True)
+# Reload: import importlib ; importlib.reload(plaques) ; plaques.go('backers_10.csv', 4, (1.5,2), 'br')
 
 
 # System libraries
@@ -81,9 +81,12 @@ def swap_cycles_material(plaque, image_filename):
     new_material.node_tree.nodes['Image Texture'].image = new_image # if first
 
 def swap_blender_texture(plaque, image_filename):
-    print("Using Blender Render method")
-    print("Or at least I will when the code's written!")
-    pass
+    new_material = plaque.material_slots[0].material.copy()
+    plaque.material_slots[0].material = new_material
+    new_image = bpy.data.images.load(image_filename)
+    new_texture = new_material.texture_slots[0].texture.copy()
+    new_material.texture_slots[0].texture = new_texture
+    new_texture.image = new_image
 
 def render_texture_to_file(text_to_render, to_filename):
     from PIL import Image, ImageDraw, ImageFont
