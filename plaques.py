@@ -42,14 +42,12 @@ def register():
 def unregister():
     pass
 
-def get_backers(filename):
+def get_backers(csv_filename):
     current_directory = os.path.dirname(bpy.data.filepath)
-    full_file_path = os.path.join(current_directory, filename)
+    full_file_path = os.path.join(current_directory, csv_filename)
     with codecs.open(full_file_path, 'r', 'utf-8-sig') as csvfile:
         iterable_lazy_reader = csv.reader(csvfile, quotechar='"')
         headers = next(iterable_lazy_reader) # consumes first item
-
-        # zip into a dictionary
         for row in iterable_lazy_reader:
             backer = dict(zip(headers, row))
             yield backer # turns entire function into an iterator
@@ -79,41 +77,36 @@ def throw_invalid_selection():
     if len(bpy.context.selected_objects) > 1:
         raise Exception("Select only one prototype")
 
-def create_material(plaque, directory, text, backer_number):
-    image_filename = backer_number + '.png'
-    generate_texture(text, os.path.join(directory, image_filename))
-
+def swap_cycles_material(plaque, image_filename):
     new_material = plaque.material_slots[0].material.copy()
     plaque.material_slots[0].material = new_material
-    new_image = bpy.data.images.load('//texture_cache\\' + image_filename)
-    new_material.node_tree.nodes['Image Texture'].image = new_image
-    #TODO make more general, sometimes just 'Image Texture'
+    new_image = bpy.data.images.load(image_filename)
+    new_material.node_tree.nodes['Image Texture'].image = new_image # if first
 
-def generate_texture(name, filename):
+def render_texture_to_file(text_to_render, to_filename):
     from PIL import Image, ImageDraw, ImageFont
-
     im = Image.new('RGB', (512,64), (0,0,0))
-
     draw = ImageDraw.Draw(im)
     fnt = ImageFont.truetype('arial.ttf', 50)
-    draw.text((0, 0), name, font=fnt, fill=(255,255,255))
+    draw.text((0, 0), text_to_render, font=fnt, fill=(255,255,255))
+    im.save(to_filename)
 
-    im.save(filename)
-
-def go(csv_file, columns, spacing):
+def go(csv_filename, columns, spacing):
     throw_invalid_selection()
-    cache_directory = 'texture_cache'
-
     prototype = bpy.context.selected_objects[0]
-    for plaque_number, backer in enumerate(get_backers(csv_file)):
+    for plaque_number, backer in enumerate(get_backers(csv_filename)):
         if plaque_number == 0:
             plaque = prototype
         else:
             offset = get_offset(plaque_number, columns, spacing)
             plaque = create_plaque(prototype, offset)
 
+        # TODO extract to swap_text() method and provide enum cycles switch
+        cwd = os.path.dirname(bpy.data.filepath)
+        image_filename = cwd + '\\texture_cache\\' + backer['Number'] + '.png'
         text_to_render = backer['Name'] + ', ' + backer['Country']
-        create_material(plaque, cache_directory, text_to_render, backer['Number'])
+        render_texture_to_file(text_to_render, image_filename)
+        swap_cycles_material(plaque, image_filename)
 
 if __name__ == '__main__':
     register() # So that we can run the code from Text Editor
